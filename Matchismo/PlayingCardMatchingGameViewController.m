@@ -8,7 +8,8 @@
 
 #import "PlayingCardMatchingGameViewController.h"
 #import "PlayingCardDeck.h"
-#import "CardMatchingGame.h"
+#import "PlayingCardCollectionViewCell.h"
+#import "PlayingCard.h"
 
 @interface CardGameViewController()
 -(void)updateUI;
@@ -17,14 +18,13 @@
 @end
 
 @interface PlayingCardMatchingGameViewController ()
-@property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *cardButtons;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *gameSelector;
 @property (nonatomic) NSUInteger matchingNCards;
-@property (strong, nonatomic) CardMatchingGame *game;
+//@property (strong, nonatomic) CardMatchingGame *game;
 @end
 
 @implementation PlayingCardMatchingGameViewController
-
+/*
 - (CardMatchingGame *)game
 {
     if (!_game) {
@@ -44,7 +44,7 @@
     
     return _game;
 }
-
+*/
 - (IBAction)dealCards
 {
     [super dealCards];
@@ -73,25 +73,48 @@
 {
     [super updateUI];
     
-    for (UIButton *cardButton in self.cardButtons){
-        Card *card = [self.game cardAtIndex:[self.cardButtons indexOfObject:cardButton]];
-        [cardButton setTitle:card.contents forState:UIControlStateSelected];
-        [cardButton setTitle:card.contents forState:UIControlStateSelected|UIControlStateDisabled];
-        cardButton.selected = card.isFaceUp;
-        cardButton.enabled = !card.isUnplayable;
-        cardButton.alpha = card.isUnplayable ? 0.3 : 1.0;
-        if (!cardButton.isSelected){
-            [cardButton setImage:[UIImage imageNamed:@"cardback.jpg"] forState:UIControlStateNormal];
-        } else {
-            [cardButton setImage:nil forState:UIControlStateNormal];
-        }
-    }
 }
 
 - (IBAction) flipCard:(UIButton *)sender
 {
     [super flipCard:sender];
     self.gameSelector.enabled = NO;
+}
+
+- (NSUInteger) startingCardCount
+{
+    return 20;
+}
+
+- (Deck *) createDeck
+{
+    return [[PlayingCardDeck alloc] init];
+}
+
+- (void)updateCell:(UICollectionViewCell *)cell usingCard:(Card *)card animate:(BOOL)animate
+{
+    if ([cell isKindOfClass:[PlayingCardCollectionViewCell class]]) {
+        PlayingCardView *playingCardView = ((PlayingCardCollectionViewCell *)cell).playingCardView;
+        if ([card isKindOfClass:[PlayingCard class]]){
+            PlayingCard *playingCard = (PlayingCard *)card;
+            playingCardView.rank = playingCard.rank;
+            playingCardView.suit = playingCard.suit;
+            playingCardView.alpha = playingCard.isUnplayable ? 0.3 : 1.0;
+            
+            
+            if (animate){
+                [UIView transitionWithView:playingCardView
+                                  duration:0.5
+                                   options:UIViewAnimationOptionTransitionFlipFromLeft
+                                animations:^{
+                                    playingCardView.faceUp = playingCard.isFaceUp;
+                                }
+                                completion:NULL];
+            } else {
+                playingCardView.faceUp = playingCard.isFaceUp;
+            }
+        }
+    }
 }
 
 @end

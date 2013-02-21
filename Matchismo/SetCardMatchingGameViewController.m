@@ -18,12 +18,12 @@
 @end
 
 @interface SetCardMatchingGameViewController ()
-@property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *cardButtons;
 @property (strong, nonatomic) CardMatchingGame *game;
 @end
 
 @implementation SetCardMatchingGameViewController
 
+/*
 - (CardMatchingGame *)game
 {
     NSUInteger matchNCards = 3;
@@ -44,29 +44,14 @@
     
     return _game;
 }
-
+*/
 - (void) updateUI
 {
     [super updateUI];
     
-    for (UIButton *cardButton in self.cardButtons){
-        Card *card = [self.game cardAtIndex:[self.cardButtons indexOfObject:cardButton]];
-        
-        if ([card isKindOfClass:[SetCard class]])
-        {
-            [cardButton setAttributedTitle:[SetCardMatchingGameViewController attributedStringDescriptionOfCard:(SetCard *) card]
-                                  forState:UIControlStateSelected];
-            [cardButton setAttributedTitle:[SetCardMatchingGameViewController attributedStringDescriptionOfCard:(SetCard *) card]
-                                  forState:UIControlStateNormal];
-        }
-        
-        cardButton.selected = card.isFaceUp;
-        cardButton.enabled = !card.isUnplayable;
-        cardButton.backgroundColor = cardButton.isSelected ? [UIColor lightGrayColor]:[UIColor whiteColor];
-        cardButton.alpha = card.isUnplayable ? 0.0 : 1.0;
-    }
 }
 
+/*
 +(NSMutableAttributedString *)attributedStringDescriptionOfCard:(SetCard *)card
 {
     NSString *symbolString;  // the plain text string we will attribute
@@ -168,5 +153,5 @@
                     range:NSMakeRange(0, [result length])];
     
     self.flipResult.attributedText = result;
-}
+}*/
 @end

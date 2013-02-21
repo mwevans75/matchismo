@@ -42,6 +42,24 @@
 
 - (id)initWithCardCount:(NSUInteger)count
               usingDeck:(Deck *)deck
+{
+    NSUInteger matchNCards = 2;
+    NSUInteger flipCost = 0;
+    NSUInteger mismatchPenalty = 0;
+    NSUInteger matchBonus = 0;
+    
+    return [self initWithCardCount:count
+                         usingDeck:deck
+                    matchingNCards:matchNCards
+                     usingFlipCost:flipCost
+              usingMismatchPenalty:mismatchPenalty
+                   usingMatchBonus:matchBonus];
+
+}
+
+
+- (id)initWithCardCount:(NSUInteger)count
+              usingDeck:(Deck *)deck
          matchingNCards:(NSUInteger) matchNCards
           usingFlipCost:(NSUInteger) flipCost
    usingMismatchPenalty:(NSUInteger) mismatchPenalty
