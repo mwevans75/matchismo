@@ -17,7 +17,7 @@
 
 @synthesize faceCardScaleFactor = _faceCardScaleFactor;
 
-#define CARD_CORNER_RADIUS 12.0
+#define CARD_CORNER_RADIUS 8.0
 #define CARD_CORNER_LABEL_RATIO 0.15
 #define CARD_CORNER_LABEL_OFFSET 2.0
 
@@ -95,7 +95,7 @@
     [roundedRect stroke];
     
     if (self.faceUp) {
-        UIImage *faceImage = [UIImage imageNamed:[NSString stringWithFormat:@"%@%@", [self rankAsString], self.suit]];
+        UIImage *faceImage = [UIImage imageNamed:[NSString stringWithFormat:@"%@%@", [self rankAsString], [self suitAsString]]];
         if (faceImage) {
             CGRect imageRect = CGRectInset(self.bounds,
                                            self.bounds.size.width * (1.0 - self.faceCardScaleFactor),
@@ -152,7 +152,25 @@
     return @[@"?",@"A",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9",@"10",@"J",@"Q",@"K"][self.rank];
 }
 
-- (void)drawPips{
+- (NSString *)suitAsString
+{
+    NSString *suitAsString = @"?";
+    
+    if ([self.suit isEqualToString:@"♥"]) {
+        suitAsString = @"H";
+    } else if ([self.suit isEqualToString:@"♦"]) {
+        suitAsString = @"D";
+    } else if ([self.suit isEqualToString:@"♠"]) {
+        suitAsString = @"S";
+    } else if ([self.suit isEqualToString:@"♣"]) {
+        suitAsString = @"C";
+    }
+    
+    return suitAsString;
+}
+
+- (void)drawPips
+{
     if ((self.rank == 1) || (self.rank == 3) || (self.rank == 5) || (self.rank == 9)) {
         [self drawPipsWithHorizontalOffset:0
                             verticalOffset:0
