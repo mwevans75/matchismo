@@ -19,16 +19,34 @@
 @property (weak, nonatomic) IBOutlet UIButton *dealButton;
 @property (weak, nonatomic) IBOutlet UISlider *flipResultHistory;
 @property (weak, nonatomic) IBOutlet UICollectionView *cardCollectionView;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *gameSelector;
 @property (nonatomic) int flipCount;
 @property (strong, nonatomic) GameResult *gameResult;
 @end
 
 @implementation CardGameViewController
 
+
+/********************
+ *
+ * Abstract Methods
+ *
+ *******************/
+- (Deck *) createDeck
+{
+    return nil;
+} // abstract
+
+- (void)updateCell:(UICollectionViewCell *)cell
+         usingCard:(Card *)card
+           animate:(BOOL) animate
+{
+} // abstract
+
 -(void)viewDidLoad
 {
     [super viewDidLoad];
-
+    [self translateGameType];
     [self dealCards];
 }
 
@@ -38,25 +56,34 @@
     self.gameResult = nil;
     self.flipCount = 0;
     self.flipResult.text = @"";
+    self.gameSelector.enabled = YES;
     [self updateUI];
 }
 
 - (CardMatchingGame *)game
 {
-    
     if (!_game) {
+        
+        Deck *deck = [self createDeck];
+        
         NSLog(@" ");
-        NSLog(@"Initializing Generic Matching Game.");
+        NSLog(@"Initializing %@ Matching Game.", self.tabBarItem.title);
         NSLog(@"Cards: %d", self.startingCardCount);
+        NSLog(@"Matching Cards: %d", self.matchingNCards);
+        NSLog(@"Flip Cost: %d", self.flipCost);
+        NSLog(@"Mismatch Penalty: %d", self.mismathPenalty);
+        NSLog(@"Match Bonus: %d", self.matchBonus);
         NSLog(@"-------------------------------------------");
         _game = [[CardMatchingGame alloc] initWithCardCount:self.startingCardCount
-                                                  usingDeck:[self createDeck]];
+                                                  usingDeck:deck
+                                             matchingNCards:self.matchingNCards
+                                              usingFlipCost:self.flipCost
+                                       usingMismatchPenalty:self.mismathPenalty
+                                            usingMatchBonus:self.matchBonus];
     }
     
     return _game;
 }
-
-- (Deck *) createDeck {return nil;} // abstract
 
 -(GameResult *)gameResult
 {
@@ -78,13 +105,15 @@
  
 - (void) updateUI
 {
-    for (UICollectionViewCell *cell in [self.cardCollectionView visibleCells]){
+    for (UICollectionViewCell *cell in [self.cardCollectionView visibleCells]) {
         NSIndexPath *indexPath = [self.cardCollectionView indexPathForCell:cell];
         Card *card = [self.game cardAtIndex:indexPath.item];
-        [self updateCell:cell usingCard:card animate:YES]; // NEED TO FIX THE ANIMATION HERE
+        [self updateCell:cell usingCard:card animate:YES];
     }
+    
     self.scoreLabel.text = [NSString stringWithFormat:@"Score: %d", self.game.score];
     self.flipResultHistory.maximumValue = [self.game.moveHistory count]-1;
+    
     if (self.flipResultHistory.value == self.flipResultHistory.maximumValue || self.flipResultHistory.maximumValue == 0.0f)
     {
         [self updateResultOfLastFlipLabel:[self.game.moveHistory lastObject]];
@@ -101,12 +130,31 @@
         }
     }
 }
+- (IBAction)changeGameType:(id)sender
+{
+    [self translateGameType];
+    [self dealCards];
+}
+
+- (void) translateGameType
+{
+    if (self.gameSelector) {
+        if (self.gameSelector.selectedSegmentIndex == 0){
+            self.matchingNCards = 2;
+        } else if (self.gameSelector.selectedSegmentIndex == 1){
+            self.matchingNCards = 3;
+        } else {
+            self.matchingNCards = nil;
+        }
+    }
+}
 
 - (void)setFlipCount:(int)flipCount
 {
     _flipCount = flipCount;
     self.flipsLabel.text = [NSString stringWithFormat:@"Flips: %d", self.flipCount];
 }
+
 - (IBAction)flipCard:(UITapGestureRecognizer *)gesture
 {
     CGPoint tapLocation = [gesture locationInView:self.cardCollectionView];
@@ -120,6 +168,7 @@
         self.gameResult.score = self.game.score;
         [self updateUI];
     }
+    self.gameSelector.enabled = NO;
 }
 
 // This is the default thing to do for card matching games - just use a NSString here
@@ -143,7 +192,7 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PlayingCard"
+    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Card"
                                                                            forIndexPath:indexPath];
     
     Card *card = [self.game cardAtIndex:indexPath.item];
@@ -153,8 +202,5 @@
     return cell;
 }
 
-- (void)updateCell:(UICollectionViewCell *)cell usingCard:(Card *)card animate:(BOOL) animate
-{
-    // abstract
-}
+
 @end

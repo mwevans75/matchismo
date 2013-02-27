@@ -9,10 +9,6 @@
 #import "CardMatchingGameMove.h"
 #import "Card.h"
 
-@interface CardMatchingGameMove()
-
-@end
-
 @implementation CardMatchingGameMove
 
 -(id) initWithMoveKind:(MoveKindType) moveKind

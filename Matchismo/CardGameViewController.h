@@ -12,9 +12,12 @@
 @interface CardGameViewController : UIViewController
 
 @property (nonatomic) NSUInteger startingCardCount; // abstract
+@property (nonatomic) NSUInteger matchingNCards; // abstract
+@property (nonatomic) NSUInteger flipCost; // abstract
+@property (nonatomic) NSUInteger matchBonus; // abstract
+@property (nonatomic) NSUInteger mismathPenalty; // abstract
+
 - (Deck *) createDeck; // abstract
 - (void)updateCell:(UICollectionViewCell *)cell usingCard:(Card *)card
            animate:(BOOL) animate; // abstract
-
-
 @end

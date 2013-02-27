@@ -8,10 +8,6 @@
 
 #import "SettingsViewController.h"
 
-@interface SettingsViewController ()
-
-@end
-
 @implementation SettingsViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil

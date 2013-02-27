@@ -10,7 +10,6 @@
 
 @interface PlayingCardView()
 @property (nonatomic) CGFloat faceCardScaleFactor;
-
 @end
 
 @implementation PlayingCardView
@@ -82,7 +81,7 @@
 
 - (void)drawRect:(CGRect)rect
 {
-    // Drazing Code
+    // Drawing Code
     UIBezierPath *roundedRect = [UIBezierPath bezierPathWithRoundedRect:self.bounds
                                                            cornerRadius:CARD_CORNER_RADIUS];
     

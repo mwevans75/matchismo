@@ -11,83 +11,27 @@
 #import "PlayingCardCollectionViewCell.h"
 #import "PlayingCard.h"
 
-@interface CardGameViewController()
--(void)updateUI;
-- (IBAction) flipCard:(UIButton *)sender;
-- (IBAction) dealCards;
-@end
-
 @interface PlayingCardMatchingGameViewController ()
-@property (weak, nonatomic) IBOutlet UISegmentedControl *gameSelector;
-@property (nonatomic) NSUInteger matchingNCards;
-//@property (strong, nonatomic) CardMatchingGame *game;
+
 @end
 
 @implementation PlayingCardMatchingGameViewController
-/*
-- (CardMatchingGame *)game
-{
-    if (!_game) {
-        [self translateGameType];
-        NSLog(@" ");
-        NSLog(@"Initializing Playing Card Matching Game.");
-        NSLog(@"Cards: %d", self.cardButtons.count);
-        NSLog(@"Cards to Match: %d", self.matchingNCards);
-        NSLog(@"-------------------------------------------");
-        _game = [[CardMatchingGame alloc] initWithCardCount:self.cardButtons.count
-                                                  usingDeck:[[PlayingCardDeck alloc] init]
-                                             matchingNCards:self.matchingNCards
-                                              usingFlipCost:1
-                                       usingMismatchPenalty:2
-                                            usingMatchBonus:4];
-    }
-    
-    return _game;
-}
-*/
-- (IBAction)dealCards
-{
-    [super dealCards];
-    self.gameSelector.enabled = YES;
 
-}
+#define FLIP_COST 1
+#define MISMATCH_PENALTY 2
+#define MATCH_BONUS 4
 
-- (IBAction)changeGameType:(id)sender
-{
-    [self translateGameType];
-    [self dealCards];
-}
-
-- (void) translateGameType
-{
-    if (self.gameSelector.selectedSegmentIndex == 0){
-        self.matchingNCards = 2;
-    } else if (self.gameSelector.selectedSegmentIndex == 1){
-        self.matchingNCards = 3;
-    } else {
-        self.matchingNCards = 2;
-    }
-}
-
-- (void) updateUI
-{
-    [super updateUI];
-    
-}
-
-- (IBAction) flipCard:(UIButton *)sender
-{
-    [super flipCard:sender];
-    self.gameSelector.enabled = NO;
-}
 
 - (NSUInteger) startingCardCount
 {
-    return 20;
+    return 22;
 }
 
-- (Deck *) createDeck
+- (PlayingCardDeck *) createDeck
 {
+    self.flipCost = FLIP_COST;
+    self.mismathPenalty = MISMATCH_PENALTY;
+    self.matchBonus = MATCH_BONUS;
     return [[PlayingCardDeck alloc] init];
 }
 
@@ -101,8 +45,7 @@
             playingCardView.suit = playingCard.suit;
             playingCardView.alpha = playingCard.isUnplayable ? 0.3 : 1.0;
             
-            
-            if (animate){
+            if (animate && playingCardView.faceUp != playingCard.isFaceUp){
                 [UIView transitionWithView:playingCardView
                                   duration:0.5
                                    options:UIViewAnimationOptionTransitionFlipFromLeft

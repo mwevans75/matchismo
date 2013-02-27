@@ -8,47 +8,62 @@
 
 #import "SetCardMatchingGameViewController.h"
 #import "SetCardDeck.h"
+#import "SetCardCollectionViewCell.h"
 #import "SetCard.h"
-#import "CardMatchingGame.h"
-#import "CardMatchingGameMove.h"
-
-@interface CardGameViewController ()
--(void)updateUI;
-@property (weak, nonatomic) IBOutlet UILabel *flipResult;
-@end
 
 @interface SetCardMatchingGameViewController ()
-@property (strong, nonatomic) CardMatchingGame *game;
+
 @end
 
 @implementation SetCardMatchingGameViewController
 
-/*
-- (CardMatchingGame *)game
+#define FLIP_COST 0
+#define MISMATCH_PENALTY 3
+#define MATCH_BONUS 4
+
+
+- (NSUInteger) startingCardCount
 {
-    NSUInteger matchNCards = 3;
-    
-    if (!_game) {
-        NSLog(@" ");
-        NSLog(@"Initializing Set Card Matching Game.");
-        NSLog(@"Cards: %d", self.cardButtons.count);
-        NSLog(@"Cards to Match: %d", matchNCards);
-        NSLog(@"-------------------------------------------");
-        _game = [[CardMatchingGame alloc] initWithCardCount:self.cardButtons.count
-                                                  usingDeck:[[SetCardDeck alloc] init]
-                                             matchingNCards:matchNCards
-                                              usingFlipCost:0
-                                       usingMismatchPenalty:3
-                                            usingMatchBonus:4];
-    }
-    
-    return _game;
+    return 12;
 }
-*/
-- (void) updateUI
+
+- (SetCardDeck *) createDeck
 {
-    [super updateUI];
-    
+    self.flipCost = FLIP_COST;
+    self.mismathPenalty = MISMATCH_PENALTY;
+    self.matchBonus = MATCH_BONUS;
+    self.matchingNCards = 3;
+    return [[SetCardDeck alloc] init];
+}
+
+- (void)updateCell:(UICollectionViewCell *)cell usingCard:(Card *)card animate:(BOOL)animate
+{
+    if ([cell isKindOfClass:[SetCardCollectionViewCell class]]) {
+        SetCardView *setCardView = ((SetCardCollectionViewCell *)cell).setCardView;
+        if ([card isKindOfClass:[SetCard class]]){
+            SetCard *setCard = (SetCard *)card;
+            setCardView.symbol = setCard.symbol;
+            setCardView.shading = setCard.shading;
+            setCardView.color = setCard.color;
+            setCardView.number = setCard.number;
+            setCardView.alpha = setCard.isFaceUp ? 0.3 : 1.0;
+            
+            setCardView.backgroundColor = setCard.isUnplayable ? [UIColor lightGrayColor]:[UIColor whiteColor];
+
+            
+            /*if (animate && playingCardView.faceUp != playingCard.isFaceUp){
+                [UIView transitionWithView:playingCardView
+                                  duration:0.5
+                                   options:UIViewAnimationOptionTransitionFlipFromLeft
+                                animations:^{
+                                    playingCardView.faceUp = playingCard.isFaceUp;
+                                }
+                                completion:NULL];
+            } else {
+                playingCardView.faceUp = playingCard.isFaceUp;
+            }*/
+        }
+    }
 }
 
 /*
