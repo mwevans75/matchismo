@@ -19,11 +19,12 @@
     usingMismatchPenalty:(NSUInteger) mismatchPenalty
          usingMatchBonus:(NSUInteger) matchBonus;
 
-- (id) initWithCardCount:(NSUInteger)cardCount
-               usingDeck:(Deck *)deck;
-
-- (Card *)cardAtIndex:(NSUInteger)index;
 - (void)flipCardAtIndex:(NSUInteger)index;
+- (Card *)cardAtIndex:(NSUInteger)index;
+- (void)deleteCardsAtIndexes:(NSIndexSet *)indexSet;
+- (BOOL)addCards:(NSUInteger)numberOfCards;
+- (NSUInteger)cardsInPlay;
+- (NSUInteger)cardsLeftInDeck;
 
 @property (nonatomic,readonly) int score;
 @property (nonatomic,readonly) NSString *lastResult;

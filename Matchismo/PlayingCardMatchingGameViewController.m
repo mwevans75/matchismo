@@ -20,6 +20,8 @@
 #define FLIP_COST 1
 #define MISMATCH_PENALTY 2
 #define MATCH_BONUS 4
+#define REMOVE_MATCHED NO
+#define ADD_CARD_COUNT 0
 
 
 - (NSUInteger) startingCardCount
@@ -27,11 +29,19 @@
     return 22;
 }
 
+
+- (NSString *)obtainCardCollectionViewReuseIdentifier
+{
+    return @"PlayingCard";
+}
+
 - (PlayingCardDeck *) createDeck
 {
     self.flipCost = FLIP_COST;
     self.mismathPenalty = MISMATCH_PENALTY;
     self.matchBonus = MATCH_BONUS;
+    self.removeMatched = REMOVE_MATCHED;
+    self.addCardCount = ADD_CARD_COUNT;
     return [[PlayingCardDeck alloc] init];
 }
 

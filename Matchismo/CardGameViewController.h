@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CardMatchingGame.h"
 #import "Deck.h"
 
 @interface CardGameViewController : UIViewController
@@ -16,8 +17,12 @@
 @property (nonatomic) NSUInteger flipCost; // abstract
 @property (nonatomic) NSUInteger matchBonus; // abstract
 @property (nonatomic) NSUInteger mismathPenalty; // abstract
+@property (nonatomic) NSUInteger addCardCount; // abstract
+@property (nonatomic) BOOL removeMatched; //abstract
 
+@property (strong, nonatomic) CardMatchingGame *game;
 - (Deck *) createDeck; // abstract
 - (void)updateCell:(UICollectionViewCell *)cell usingCard:(Card *)card
            animate:(BOOL) animate; // abstract
+- (NSString *)obtainCardCollectionViewReuseIdentifier; //abstract
 @end

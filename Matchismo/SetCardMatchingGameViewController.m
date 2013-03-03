@@ -20,11 +20,18 @@
 #define FLIP_COST 0
 #define MISMATCH_PENALTY 3
 #define MATCH_BONUS 4
-
+#define REMOVE_MATCHED YES
+#define ADD_CARD_COUNT 3
+#define MATCHING_N_CARDS 3
 
 - (NSUInteger) startingCardCount
 {
     return 12;
+}
+
+- (NSString *)obtainCardCollectionViewReuseIdentifier
+{
+    return @"SetCard";
 }
 
 - (SetCardDeck *) createDeck
@@ -32,7 +39,9 @@
     self.flipCost = FLIP_COST;
     self.mismathPenalty = MISMATCH_PENALTY;
     self.matchBonus = MATCH_BONUS;
-    self.matchingNCards = 3;
+    self.matchingNCards = MATCHING_N_CARDS;
+    self.removeMatched = REMOVE_MATCHED;
+    self.addCardCount = ADD_CARD_COUNT;
     return [[SetCardDeck alloc] init];
 }
 
@@ -50,21 +59,22 @@
             
             setCardView.backgroundColor = setCard.isUnplayable ? [UIColor lightGrayColor]:[UIColor whiteColor];
 
-            
-            /*if (animate && playingCardView.faceUp != playingCard.isFaceUp){
-                [UIView transitionWithView:playingCardView
+            if (/*animate && */setCard.isUnplayable){
+                
+                /*
+                [UIView transitionWithView:setCardView
                                   duration:0.5
-                                   options:UIViewAnimationOptionTransitionFlipFromLeft
+                                   options:UIViewAnimationOptionCurveEaseInOut
                                 animations:^{
-                                    playingCardView.faceUp = playingCard.isFaceUp;
+                                    //playingCardView.faceUp = playingCard.isFaceUp;
                                 }
-                                completion:NULL];
-            } else {
-                playingCardView.faceUp = playingCard.isFaceUp;
-            }*/
+                                completion:NULL];*/
+            } 
         }
     }
 }
+
+
 
 /*
 +(NSMutableAttributedString *)attributedStringDescriptionOfCard:(SetCard *)card

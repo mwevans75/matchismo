@@ -11,6 +11,7 @@
 
 @interface CardMatchingGame()
 @property (nonatomic,readwrite) int score;
+@property (strong, nonatomic) Deck *deck;
 @property (strong, nonatomic) NSMutableArray *cards;
 @property (nonatomic,readwrite) NSString *lastResult;
 @property (nonatomic,readwrite) NSMutableArray *moveHistory;
@@ -42,24 +43,6 @@
 
 - (id)initWithCardCount:(NSUInteger)count
               usingDeck:(Deck *)deck
-{
-    NSUInteger matchNCards = 2;
-    NSUInteger flipCost = 0;
-    NSUInteger mismatchPenalty = 0;
-    NSUInteger matchBonus = 0;
-    
-    return [self initWithCardCount:count
-                         usingDeck:deck
-                    matchingNCards:matchNCards
-                     usingFlipCost:flipCost
-              usingMismatchPenalty:mismatchPenalty
-                   usingMatchBonus:matchBonus];
-
-}
-
-
-- (id)initWithCardCount:(NSUInteger)count
-              usingDeck:(Deck *)deck
          matchingNCards:(NSUInteger) matchNCards
           usingFlipCost:(NSUInteger) flipCost
    usingMismatchPenalty:(NSUInteger) mismatchPenalty
@@ -68,8 +51,9 @@
     self = [super init];
     
     if (self) {
+        self.deck = deck;
         for (int i = 0; i < count; i++) {
-            Card *card = [deck drawRandomCard];
+            Card *card = [self.deck drawRandomCard];
             if (!card) {
                 self = nil;
             } else {
@@ -80,6 +64,7 @@
         self.flipCost = flipCost;
         self.mismatchPenalty = mismatchPenalty;
         self.matchBonus = matchBonus;
+        
     }
     
     return self;
@@ -150,5 +135,30 @@
         self.score += scoreDelta;
         card.faceUp = !card.isFaceUp;
     }
+}
+- (NSUInteger)cardsInPlay
+{
+    return [self.cards count];
+}
+
+- (NSUInteger)cardsLeftInDeck
+{
+    return self.deck.cardCount;
+}
+
+- (void)deleteCardsAtIndexes:(NSIndexSet *)indexSet
+{
+    [self.cards removeObjectsAtIndexes:indexSet];
+}
+
+- (BOOL)addCards:(NSUInteger)numberOfCards
+{
+    BOOL enoughCards = (numberOfCards<=[self.deck cardCount]);
+    if (enoughCards)
+        for (NSUInteger i=0; i<numberOfCards; i++) {
+            Card *card = [self.deck drawRandomCard];
+            [self.cards addObject:card];
+        }
+    return enoughCards;
 }
 @end
